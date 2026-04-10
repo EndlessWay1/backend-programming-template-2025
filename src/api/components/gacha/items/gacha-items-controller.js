@@ -100,6 +100,7 @@ async function createItems(request, response, next) {
       }
 
       // if item in the db
+      // eslint-disable-next-line no-await-in-loop
       const exist = await gachaItemsService.itemExists(periode, item);
       if (exist) {
         throw errorResponder(
