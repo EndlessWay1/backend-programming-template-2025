@@ -6,5 +6,6 @@ module.exports = (db) =>
       periode: Number,
       item: String,
       date: Date,
+      isWin: { type: Boolean, default: true },
     })
   );

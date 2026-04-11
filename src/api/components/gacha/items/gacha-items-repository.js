@@ -66,7 +66,9 @@ async function deleteItem(id) {
 }
 
 async function getLatestPeriode() {
-  return gachaItems.findOne({}).sort({ periode: -1 });
+  const periods = await gachaItems.find({}).sort({ periode: -1 }).limit(1);
+  // if periods is empty, returns undefine
+  return periods[0]?.periode;
 }
 
 async function getWinItems() {

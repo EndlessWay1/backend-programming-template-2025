@@ -6,8 +6,6 @@ async function getQItems(Valid, Periode, Win, Name) {
   bit = (bit | (Win !== undefined && Win !== false)) << 1;
   bit = (bit | (Periode !== undefined)) << 1;
   bit |= Name !== undefined;
-  // eslint-disable-next-line no-console
-  console.log(bit);
 
   let promises;
   // eslint-disable-next-line default-case
@@ -15,8 +13,6 @@ async function getQItems(Valid, Periode, Win, Name) {
     // all false
     case 0b0000: {
       promises = gachaItemsRepository.getItems();
-      // eslint-disable-next-line no-console
-      console.log('get items');
       break;
     }
     // get valid items
@@ -60,7 +56,7 @@ async function getQItems(Valid, Periode, Win, Name) {
         Periode,
         Name
       );
-      promises = Promise.resolve(!item || !item.isWin ? null : item);
+      promises = Promise.resolve(!item || !item.isWin ? [] : item);
       break;
     }
     // get valid items by name
@@ -79,27 +75,27 @@ async function getQItems(Valid, Periode, Win, Name) {
         Periode,
         Name
       );
-      promises = Promise.resolve(!item || !(item.quantity < 1) ? null : item);
+      promises = Promise.resolve(!item || !(item.quantity > 0) ? [] : item);
       break;
     }
     // get valid win item
     case 0b1100: {
       const item = await gachaItemsRepository.getWinItems();
-      promises = Promise.resolve(!item || !(item.quantity < 1) ? null : item);
+      promises = Promise.resolve(item.filters((i) => i.quantity > 0));
       break;
     }
 
     // get valid win item By Name
     case 0b1101: {
       const item = await gachaItemsRepository.getWinItemsByName(Name);
-      promises = Promise.resolve(!item || !(item.quantity < 1) ? null : item);
+      promises = Promise.resolve(item.filters((i) => i.quantity > 0));
       break;
     }
 
     // get valid win item By Periode
     case 0b1110: {
       const item = await gachaItemsRepository.getWinItemsByPeriode(Periode);
-      promises = Promise.resolve(!item || !(item.quantity < 1) ? null : item);
+      promises = Promise.resolve(item.filters((i) => i.quantity > 0));
       break;
     }
 
@@ -110,11 +106,11 @@ async function getQItems(Valid, Periode, Win, Name) {
         Name
       );
       const filters = item && item.isWin && item.quantity > 0;
-      promises = Promise.resolve(!filters ? null : item);
+      promises = Promise.resolve(!filters ? [] : item);
       break;
     }
     default: {
-      promises = null;
+      promises = [];
     }
   }
   return promises;
