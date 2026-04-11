@@ -8,13 +8,14 @@ module.exports = (app) => {
   app.use('/gacha-items', route);
 
   // Get list of all gacha available yang dapat dimenangi.
+  // (query periode=)
   route.get('/', gachaItemsController.getValidItems);
+
+  // get semua item gacha
+  route.get('/all', gachaItemsController.getItems);
 
   // Get item spesifik
   route.get('/:id', gachaItemsController.getItem);
-
-  // get semua item gacha (query periode=)
-  route.get('/all', gachaItemsController.getItems);
 
   // Create a new gacha
   route.post('/', gachaItemsController.createItems);

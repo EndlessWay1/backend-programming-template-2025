@@ -9,6 +9,19 @@ async function getValidItemsByPeriod(periode) {
   return gachaItems.find({ quantity: { $gt: 0 }, periode });
 }
 
+async function getValidItemsByName(name) {
+  return gachaItems.find({ quantity: { $gt: 0 }, item: name });
+}
+
+// find items greater than 0 available
+async function getValidWinItems() {
+  return gachaItems.find({ quantity: { $gt: 0 }, isWin: true });
+}
+
+async function getValidWinItemsByPeriod(periode) {
+  return gachaItems.find({ quantity: { $gt: 0 }, periode, isWin: true });
+}
+
 // find all items
 async function getItems() {
   return gachaItems.find({});
@@ -56,14 +69,34 @@ async function getLatestPeriode() {
   return gachaItems.findOne({}).sort({ periode: -1 });
 }
 
+async function getWinItems() {
+  return gachaItems.find({ isWin: true });
+}
+
+// find all items by periode
+async function getWinItemsByPeriod(periode) {
+  return gachaItems.find({ periode, isWin: true });
+}
+
+// find all items by name
+async function getWinItemsByName(name) {
+  return gachaItems.find({ item: name, isWin: true });
+}
+
 module.exports = {
   getValidItems,
+  getValidWinItems,
   getValidItemsByPeriod,
+  getValidItemsByName,
+  getValidWinItemsByPeriod,
   getItems,
   getItem,
   getItemsByPeriod,
   getItemsByName,
   getItemByPeriodnName,
+  getWinItems,
+  getWinItemsByPeriod,
+  getWinItemsByName,
   getLatestPeriode,
   createItem,
   changeQuantity,

@@ -7,9 +7,19 @@ async function getItems(request, response, next) {
     const { periode } = request.query;
     let users;
     if (!periode) {
-      users = await gachaItemsService.getItems();
+      users = await gachaItemsService.getQItems(
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      );
     } else {
-      users = await gachaItemsService.getItemsByPeriod(periode);
+      users = await gachaItemsService.getQItems(
+        undefined,
+        periode,
+        undefined,
+        undefined
+      );
     }
 
     return response.status(200).json(users);
@@ -21,11 +31,11 @@ async function getItems(request, response, next) {
 // mengambil satu item di database
 async function getItem(request, response, next) {
   try {
-    const { id } = request.params.id;
+    const { id } = request.params;
 
     // we dont have to validate id, because if id is blank,
     // then we will call getItems on the routes
-    const success = await getItem(id);
+    const success = await gachaItemsService.getItem(id);
     if (!success) {
       throw errorResponder(errorTypes.NOT_FOUND, 'Item not found');
     }
@@ -42,9 +52,19 @@ async function getValidItems(request, response, next) {
     const { periode } = request.query;
     let users;
     if (!periode) {
-      users = await gachaItemsService.getValidItems();
+      users = await gachaItemsService.getQItems(
+        true,
+        undefined,
+        undefined,
+        undefined
+      );
     } else {
-      users = await gachaItemsService.getValidItemsByPeriod(periode);
+      users = await gachaItemsService.getQItems(
+        true,
+        periode,
+        undefined,
+        undefined
+      );
     }
 
     return response.status(200).json(users);
@@ -111,10 +131,11 @@ async function createItems(request, response, next) {
     }
 
     // change name to item
-    const newItems = items.map(({ name: item, periode, quantity }) => ({
+    const newItems = items.map(({ name: item, periode, quantity, isWin }) => ({
       item,
       periode,
       quantity,
+      isWin,
     }));
 
     // if the above code runs, then the input isnt error
@@ -136,7 +157,7 @@ async function createItems(request, response, next) {
 // mendelete item
 async function deleteItem(request, response, next) {
   try {
-    const { id } = request.params.id;
+    const { id } = request.params;
     if (!id) {
       throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Id is required');
     }
