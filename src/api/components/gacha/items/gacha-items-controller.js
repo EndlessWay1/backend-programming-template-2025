@@ -115,7 +115,7 @@ async function createItems(request, response, next) {
       if (quantity < 0) {
         throw errorResponder(
           errorTypes.VALIDATION_ERROR,
-          'Quantity is required to be positive'
+          'Quantity is required to be more than zero'
         );
       }
 

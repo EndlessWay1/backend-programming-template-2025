@@ -51,8 +51,8 @@ async function deleteGachaHis(id) {
   return gachaUsersRepository.deleteGachaHis(id);
 }
 
-async function getGachaUsersLatestTime(email) {
-  return gachaUsersRepository.getGachaUsersLatestTime(email);
+async function getGachaUsersTimeInThisDay(email, newDay) {
+  return gachaUsersRepository.getGachaUsersTimeInThisDay(email, newDay);
 }
 
 // use a query based function
@@ -183,7 +183,7 @@ module.exports = {
   getGachaUserWinHisLength,
   getGachaUserHisLength,
   deleteGachaHis,
-  getGachaUsersLatestTime,
+  getGachaUsersTimeInThisDay,
   createGachaHis,
   getQGachaHis,
 };

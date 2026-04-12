@@ -73,8 +73,26 @@ async function createGachaHis(email, name, periode, date, isWin) {
   return gachaHistory.create({ email, item: name, periode, date, isWin });
 }
 
-async function getGachaUsersLatestTime(email) {
-  return gachaHistory.find({ email }).sort({ date: -1 }).limit(5);
+async function getGachaUsersTimeInThisDay(email, newDate) {
+  const startDate = new Date(newDate);
+  startDate.setSeconds(0);
+  startDate.setHours(0);
+  startDate.setMinutes(0);
+
+  const dateMidnight = new Date(newDate);
+  dateMidnight.setHours(23);
+  dateMidnight.setMinutes(59);
+  dateMidnight.setSeconds(59);
+  return gachaHistory.aggregate([
+    {
+      $match: {
+        email,
+        date: { $gt: startDate, $lt: dateMidnight },
+      },
+    },
+    { $sort: { date: -1 } },
+    { $limit: 5 },
+  ]);
 }
 
 module.exports = {
@@ -96,5 +114,5 @@ module.exports = {
   // deletion & creation
   deleteGachaHis,
   createGachaHis,
-  getGachaUsersLatestTime,
+  getGachaUsersTimeInThisDay,
 };

@@ -57,6 +57,9 @@ async function createUser(request, response, next) {
     }
 
     // The password is at least 8 characters long
+    if (!password) {
+      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Password is required');
+    }
     if (password.length < 8) {
       throw errorResponder(
         errorTypes.VALIDATION_ERROR,

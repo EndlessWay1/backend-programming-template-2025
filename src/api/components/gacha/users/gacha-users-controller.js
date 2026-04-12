@@ -125,7 +125,10 @@ async function doGacha(req, res, next) {
       throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
     }
 
-    const latestGacha = await gachaUsersService.getGachaUsersLatestTime(email);
+    const latestGacha = await gachaUsersService.getGachaUsersTimeInThisDay(
+      email,
+      Date.now()
+    );
 
     // get gacha pool from a certain periode
     const GachaPool = await gachaItemsService.getQItems(
@@ -142,22 +145,11 @@ async function doGacha(req, res, next) {
         'Gacha Pool is empty for this periode'
       );
     }
-    // eslint-disable-next-line no-console
-    console.log(`Today: ${latestGacha}`);
     if (latestGacha && latestGacha.length >= 5) {
-      const maxDate = latestGacha.sort((a, b) => b.date - a.date);
-      const todayStr = new Date().toISOString().slice(0, 10); // e.g. "2026-04-12"
-      const prevStr = new Date(maxDate[0].date).toISOString().slice(0, 10);
-      // eslint-disable-next-line no-console
-      console.log(`Today: ${todayStr}`);
-      // eslint-disable-next-line no-console
-      console.log(`Prev: ${prevStr}`);
-      if (todayStr === prevStr) {
-        throw errorResponder(
-          errorTypes.VALIDATION,
-          `Sorry, you've done 5 Gacha today, please try again tomorrow`
-        );
-      }
+      throw errorResponder(
+        errorTypes.VALIDATION,
+        `Sorry, you've done 5 Gacha today, please try again tomorrow`
+      );
     }
 
     // do gacha
